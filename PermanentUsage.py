@@ -29,8 +29,12 @@ class PermanentUsageReport():
         del __chunks
         print(self._dataframe.head(5))
 
-    def groupByConsecutiveDates(self):
-        pass
+    def groupByConsecutiveDates(self, date_col='Date', key_col='Newkey', cols_to_group_with_date=[]):
+        cols_to_group_with_date.append(date_col)
+        self._dataframe[date_col] =  pd.to_datetime(self._dataframe[date_col])
+        self._dataframe.drop_duplicates(cols_to_group_with_date, inplace=True)
+        self._dataframe.sort_values(by=cols_to_group_with_date, inplace=True, ascending=True)
+        self._dataframe[key_col] = self._dataframe[date_col].diff().dt.days.ne(1).cumsum()
 
     def groupResults(self):
         pass
